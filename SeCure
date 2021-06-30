@@ -1,0 +1,43 @@
+#!/bin/bash
+# There is need to be vigilant when it comes to internet and security.
+# That means use of strong passwords while storing files and even ecrypting the files using GnuPG.
+# Thanks to GnuPG we can use the pass tool, a UNIX password manager. Thanks to it being open source it has existings tools like git, gpg, pwgen, tree and other 
+# extensions that make it as attractive as the commercial password management tools like LastPass, KeePass among others.
+
+
+# SETUP
+apt-get install pass
+ # to initialize the password store for the personal passwords we have to generate GPG keys since pass uses GnuPG encryption in order to get  the user ID keys.
+ 
+gpg --full-generate-key
+#Select option1 for the RSA type keys.
+# For future proofing select the maximum keysize possible which is 4096
+# Specify the duration the key will be valid. For our case we chose '0' which means it has no expiry though this is not adviceable  for security reasons.
+# Input full name, email addresss and confirm to get the  ID.
+# Lastly gpg will ask you to input a 'master password' ensure it is a strong  passwords with words, symbols and alphabets but easy enough for you to remember.
+
+# with the gpg ID you can now initiat the 'pass datastore'
+
+pass init 'the user ID'
+#You can now generate and fetch passwords from RSA4096-encrypted password store
+# Example i wish to generate a 21 character password for miniproject.com. I will use the following command to generate passwords
+
+pass generate Group/miniproject.com 21
+
+#The password for the miniproject.com is thus located in a directory called Group that has a file called miniproject.com
+# to fetch the password use 
+pass show Group/miniproject.com
+#enter the master password at the prompt
+# you  can copy the password on the clipboard and paste it on the website.
+pass show -c Group/miniproject.com
+# One can also type in their existing password
+pass insert Group/womentechsters.com
+#Ofcourse you can remove password using the command
+pass rm Group/miniproject.com
+# To improve useability, redundancy and for the purpose of shairing pass on multiple credentials, we sync pass store with a Git repository
+
+#Once you have set up a private repository on your remote GitHub server, you initialize locally :
+pass git init
+pass gt remote add origin git@github.com:Sally/pass-store.git
+pass git push -u --all
+
